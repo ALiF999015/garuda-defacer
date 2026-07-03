@@ -184,21 +184,16 @@ def open_file(file_path):
 
 def check_termux_deps():
     """Check and install Termux dependencies"""
+    import shutil
+    
     if not is_termux():
         return
     
     print("  [*] Termux detected. Checking dependencies...")
     
-    # Check if python is available
-    try:
-        subprocess.run(["python", "--version"], capture_output=True, check=True)
-    except:
-        print("  [!] Python not properly configured")
-    
-    # Check termux-api for termux-open
-    result = subprocess.run(["which", "termux-open"], capture_output=True, text=True)
-    if result.returncode != 0:
-        print("  [!] termux-api not found. Installing...")
+    # Check if termux-open is available
+    if not shutil.which("termux-open"):
+        print("  [!] termux-api not found")
         print("  [*] Run: pkg install termux-api")
         print("  [*] Also install Termux:API app from F-Droid")
     
@@ -207,6 +202,8 @@ def check_termux_deps():
         print("  [*] Setting up storage access...")
         os.system("termux-setup-storage 2>/dev/null")
         time.sleep(2)
+    
+    print("  [+] Dependencies checked")
 
 # ============================================================
 # UTILITY FUNCTIONS
